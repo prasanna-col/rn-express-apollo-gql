@@ -103,7 +103,7 @@ const AddTaskScreen = ({ route, navigation }) => {
                 <View>
                   <TouchableOpacity onPress={showDatePicker}>
                     <AppText h3m AppBlack2 mt1 bold>
-                      {date.toString()}
+                     date click {date.toString()}
                     </AppText>
                   </TouchableOpacity>
 
