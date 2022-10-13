@@ -7,6 +7,7 @@ query todosData{
     text
     name
     phone
+    date
     completed
   }
 }
@@ -17,12 +18,14 @@ mutation CreateTodo(
     $text: String!
     $name: String!
     $phone: String!
+    $date: String!
   ) {
   createTodo(
     text: $text
     name: $name
     phone: $phone
-  )
+    date: $date
+    )
 }
 `;
 

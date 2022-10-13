@@ -8,6 +8,7 @@ let todosData = [
     text: 'Hello from GraphQL',
     name: "ravi",
     phone: "9023092309",
+    date: new Date(),
     completed: true,
   },
   {
@@ -15,6 +16,7 @@ let todosData = [
     text: 'Morning Meditation, Also this is sample text to check entire row size, thank you babye',
     name: "Me",
     phone: "9023092309",
+    date: new Date(),
     completed: false,
   },
 ];
@@ -25,6 +27,7 @@ const typeDefs = gql`
     text: String
     name: String
     phone: String
+    date: String
     completed: Boolean
   }
   
@@ -38,6 +41,7 @@ const typeDefs = gql`
       text: String!
       name: String!
       phone: String!
+      date: String
     ):String
     
     removeTodo(id: String!):String
@@ -61,13 +65,13 @@ const resolvers = {
   },
   Mutation: {
     createTodo: (parent, args, context, info) => {
-
       console.log("createTodo args", args)
       return todosData.push({
         id: Date.now().toString(),
         text: args.text,
         name: args.name,
         phone: args.phone,
+        date: args.date,
         completed: false,
       });
     },
