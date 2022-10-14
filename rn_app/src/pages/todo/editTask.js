@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, View, Switch } from "react-native";
+import { SafeAreaView, StyleSheet, View, Switch, TouchableOpacity } from "react-native";
 import { useMutation } from "@apollo/client";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AppHeader from "../../components/AppHeader";
 import AppStatusBar from "../../components/AppStatusBar";
 import AppButton from "../../components/AppButton";
@@ -10,8 +11,10 @@ import AppText from "../../components/AppText";
 import { READ_TODOS, UPDATE_TODO } from "./queries";
 import { Colors } from "../../assets/styles";
 import { App_borderRadius } from "../../components/AppConstants";
+import { DateFormet } from "../../utils/DateFormet";
 
 const EditTaskScreen = ({ route, navigation }) => {
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const taskData = route.params;
   const [editTodo] = useMutation(UPDATE_TODO, {
     refetchQueries: [{ query: READ_TODOS }],
@@ -20,12 +23,26 @@ const EditTaskScreen = ({ route, navigation }) => {
   const [name, setname] = useState(taskData?.name || "");
   const [phone, setPhone] = useState(taskData?.phone || "");
   const [task, setTask] = useState(taskData?.text || "");
-  const [date, setDate] = useState(taskData?.date || "12/12/2022");
+  const [date, setDate] = useState(taskData?.date || new Date());
   const [time, setTime] = useState(taskData?.time || "02:30 PM");
-  const [ispriority, setIspriority] = useState(taskData?.priority || false);
+  const [ispriority, setIspriority] = useState(taskData?.priority);
 
   const toggleSwitch = () => {
     setIspriority((previousState) => !previousState);
+  };
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    console.log("A date has been picked: ", date);
+    setDate(date);
+    hideDatePicker();
   };
 
   const on_update = async () => {
@@ -35,9 +52,10 @@ const EditTaskScreen = ({ route, navigation }) => {
       name: name,
       phone: phone,
       date: date,
-      time: time,
+      // time: time,
       priority: ispriority,
     };
+    console.log("testbtn..", editdata);
     await editTodo({ variables: editdata });
     await navigation.navigate("taskList");
   };
@@ -84,20 +102,20 @@ const EditTaskScreen = ({ route, navigation }) => {
             <View style={{ flexDirection: "row", width: "100%" }}>
               <View style={{ width: "45%", marginRight: 25 }}>
                 <AppText h3m AppBlack>
-                  Date
+                  Date Time
                 </AppText>
-                <AppText h3m AppBlack2 mt1 bold>
-                  {date}
-                </AppText>
+                <TouchableOpacity onPress={showDatePicker}>
+                  <AppText h3m AppBlack2 mt1 bold>
+                    {DateFormet(date)}
+                  </AppText>
+                </TouchableOpacity>
               </View>
-              <View style={{ width: "45%", marginRight: 25 }}>
-                <AppText h3m AppBlack>
-                  Time
-                </AppText>
-                <AppText h3m AppBlack2 mt1 bold>
-                  {time}
-                </AppText>
-              </View>
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="datetime"
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+              />
             </View>
 
             <View

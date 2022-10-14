@@ -3,6 +3,7 @@ import {
   Button,
   SafeAreaView,
   StyleSheet,
+  Switch,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -18,10 +19,17 @@ import { CREATE_TODO, READ_TODOS } from "./queries";
 import { Colors } from "../../assets/styles";
 import { App_borderRadius } from "../../components/AppConstants";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { DateFormet } from "../../utils/DateFormet";
 
 const AddTaskScreen = ({ route, navigation }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState("");
+  const [ispriority, setIspriority] = useState(false);
+
+  const toggleSwitch = () => {
+    setIspriority((previousState) => !previousState);
+  };
+
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -50,7 +58,8 @@ const AddTaskScreen = ({ route, navigation }) => {
       text: task,
       name: name,
       phone: phone,
-      date: new Date(),
+      date: date ==="" ? new Date() : date,
+      priority: ispriority
     };
     await addTodo({ variables: createdata });
     await navigation.navigate("taskList");
@@ -103,7 +112,7 @@ const AddTaskScreen = ({ route, navigation }) => {
                 <View>
                   <TouchableOpacity onPress={showDatePicker}>
                     <AppText h3m AppBlack2 mt1 bold>
-                     date click {date.toString()}
+                      {date === "" ? DateFormet(new Date()) : DateFormet(date)}
                     </AppText>
                   </TouchableOpacity>
 
@@ -115,6 +124,29 @@ const AddTaskScreen = ({ route, navigation }) => {
                   />
                 </View>
               </View>
+
+              <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: "auto"
+              }}
+            >
+              <AppText h3 AppBlack bold>
+                Priority
+              </AppText>
+              <Switch
+                style={{
+                  marginLeft: 10,
+                  transform: [{ scaleX: 0.9 }, { scaleY: 0.6 }],
+                }}
+                trackColor={{ false: "#767577", true: Colors.AppColorLight }}
+                thumbColor={ispriority ? Colors.AppColor : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch}
+                value={ispriority}
+              />
+            </View>
             </View>
           </View>
           <AppButton

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, StyleSheet, FlatList } from "react-native";
-
 import DrawerHeader from "../../components/AppHeader/drawerHeader";
 import AppStatusBar from "../../components/AppStatusBar";
 import AppButton from "../../components/AppButton";
@@ -12,6 +11,8 @@ import { Colors } from "../../assets/styles";
 
 import { App_borderRadius } from "../../components/AppConstants";
 import AppCardIcons from "../../components/AppCardIcons";
+import { Time } from "../../utils/DateFormet";
+
 const TaskListScreen = ({ route, navigation }) => {
   // useQuery -- to get the data from server
   // useMutation -- to push data or update on server.
@@ -82,6 +83,8 @@ const TaskListScreen = ({ route, navigation }) => {
             backgroundColor: !item.completed
               ? Colors.card_bg
               : Colors.completed2,
+            borderWidth: item.priority ? 2 : 0,
+            borderColor: item.priority ? Colors.AppColor : null,
           },
         ]}
       >
@@ -136,13 +139,20 @@ const TaskListScreen = ({ route, navigation }) => {
         )}
 
         {!item.completed && (
-          <AppButton
-            done
-            onPress={() => {
-              comp_notComp(item.id);
-            }}
-            title={"Done"}
-          />
+          <View style={{ flexDirection: "row" }}>
+            <AppButton
+              done
+              onPress={() => {
+                comp_notComp(item.id);
+              }}
+              title={"Done"}
+            />
+            <View style={{ marginLeft: "auto" }}>
+              <AppText h3 mt2 italic gray>
+                {Time(item.date)}
+              </AppText>
+            </View>
+          </View>
         )}
       </View>
     );
