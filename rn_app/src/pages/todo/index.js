@@ -11,11 +11,12 @@ import { Colors } from "../../assets/styles";
 
 import { App_borderRadius } from "../../components/AppConstants";
 import AppCardIcons from "../../components/AppCardIcons";
-import { Time } from "../../utils/DateFormet";
+import { Time, DateFormet } from "../../utils/DateFormet";
 
 const TaskListScreen = ({ route, navigation }) => {
   // useQuery -- to get the data from server
   // useMutation -- to push data or update on server.
+  const Tdate = DateFormet(new Date());
 
   const { data, loading, error } = useQuery(READ_TODOS);
   const [deleteTodo] = useMutation(REMOVE_TODO, {
@@ -71,6 +72,15 @@ const TaskListScreen = ({ route, navigation }) => {
 
   const comp_notComp = (taskid) => {
     updateTodoStaus({ variables: { id: taskid } });
+  };
+
+  const SortbyOldestFirst = (array) => {
+    return array
+      .reverse()
+      .sort(function (a, b) {
+        return new Date(b.date) - new Date(a.date);
+      })
+      .reverse();
   };
 
   const renderTasks = ({ item, key }) => {
@@ -149,7 +159,7 @@ const TaskListScreen = ({ route, navigation }) => {
             />
             <View style={{ marginLeft: "auto" }}>
               <AppText h3 mt2 italic gray>
-                {Time(item.date)}
+                {DateFormet(item.date)}
               </AppText>
             </View>
           </View>
@@ -175,7 +185,7 @@ const TaskListScreen = ({ route, navigation }) => {
 
             <FlatList
               style={{ marginBottom: 160 }}
-              data={todoData}
+              data={SortbyOldestFirst(todoData)}
               keyExtractor={(item, index) => index.toString()}
               enableEmptySections={true}
               renderItem={renderTasks}

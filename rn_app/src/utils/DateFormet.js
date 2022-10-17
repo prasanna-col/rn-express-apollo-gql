@@ -6,6 +6,6 @@ export const Time = (value) => {
 };
 
 export const DateFormet = (value) => {
-  var date = moment(value).format("L LT");
+  var date = moment(value).format("L");
   return date;
 };

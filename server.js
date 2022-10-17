@@ -2,26 +2,7 @@ const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 const cors = require("cors");
 
-let todosData = [
-  {
-    id: Date.now().toString(),
-    text: "Hello from GraphQL",
-    name: "ravi",
-    phone: "9023092309",
-    date: Date(),
-    priority: false,
-    completed: true,
-  },
-  {
-    id: Date.now().toString() + "2",
-    text: "Morning Meditation, Also this is sample text to check entire row size, thank you babye",
-    name: "Me",
-    phone: "9023092309",
-    date: Date(),
-    priority: false,
-    completed: false,
-  },
-];
+let todosData = [];
 
 const typeDefs = gql`
   type Todoo {
