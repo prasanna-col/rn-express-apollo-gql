@@ -1,55 +1,65 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const READ_TODOS = gql`
-query todosData{
-  todos {
-    id
-    text
-    name
-    phone
-    completed
+  query todosData {
+    todos {
+      id
+      text
+      name
+      phone
+      date
+      priority
+      completed
+    }
   }
-}
 `;
 
 export const CREATE_TODO = gql`
-mutation CreateTodo(
+  mutation CreateTodo(
     $text: String!
     $name: String!
     $phone: String!
+    $date: String!
+    $priority: Boolean!
   ) {
-  createTodo(
-    text: $text
-    name: $name
-    phone: $phone
-  )
-}
+    createTodo(
+      text: $text
+      name: $name
+      phone: $phone
+      date: $date
+      priority: $priority
+    )
+  }
 `;
 
 export const REMOVE_TODO = gql`
-mutation RemoveTodo($id: String!) {
-  removeTodo(id: $id)
-}
+  mutation RemoveTodo($id: String!) {
+    removeTodo(id: $id)
+  }
 `;
 
 export const UPDATE_TODO = gql`
-mutation UpdateTodo(
-  $id: String!
-  $text: String!
-  $name: String!
-  $phone: String!
+  mutation UpdateTodo(
+    $id: String!
+    $text: String!
+    $name: String!
+    $phone: String!
+    $date: String!
+    $priority: Boolean!
   ) {
-  updateTodo(
-    id: $id
-    text: $text
-    name: $name
-    phone: $phone
+    updateTodo(
+      id: $id
+      text: $text
+      name: $name
+      phone: $phone
+      date: $date
+      priority: $priority
     )
-}
+  }
 `;
 
 export const UPDATE_TODOSTATUS = gql`
-mutation UpdateTodoStatus($id: String!) {
-  updateTodoStatus(id: $id)
-}
+  mutation UpdateTodoStatus($id: String!) {
+    updateTodoStatus(id: $id)
+  }
 `;
