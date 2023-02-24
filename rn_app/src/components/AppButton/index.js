@@ -10,7 +10,7 @@ const AppButton = ({
     <TouchableOpacity
         activeOpacity={Active_Opacity}
         onPress={onPress}
-        style={[styles.Btn, styles.boxShadow, { width: done ? 60 : "100%" }]}
+        style={[styles.Btn, styles.boxShadow, { width: done ? 70 : "100%" }]}
     >
         <Text style={styles.titleStyle}>{title}</Text>
     </TouchableOpacity>

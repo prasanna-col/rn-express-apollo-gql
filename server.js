@@ -1,8 +1,11 @@
 const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 const cors = require("cors");
+const { v4: uuidv4 } = require('uuid');
 
 let todosData = [];
+let studentData = [];
+let data_arr = [];
 
 const typeDefs = gql`
   type Todoo {
@@ -15,8 +18,48 @@ const typeDefs = gql`
     completed: Boolean
   }
 
+  type Student {
+    id: String!
+    name: String!
+    contact: String!
+    qualification: String!
+    books:[BookTypeDef!]!
+  }
+
+  type BookTypeDef {
+    id: String!
+    text: String!
+    author: String!
+  }
+
+  input BookInput {
+    id: String!
+    text: String!
+    author: String!
+  }
+
+  type Data {
+    id: ID!
+    stringField: String!
+    intField: Int!
+    objectField: ObjectData!
+    arrayField: [ObjectData!]!
+  }
+
+  type ObjectData {
+    field1: String!
+    field2: String!
+  }
+
+  input InputObject {
+    field1: String!
+    field2: String!
+  }
+
   type Query {
+    studentQuery: [Student]!
     todos: [Todoo]!
+    storedData: [Data]!
   }
 
   type Mutation {
@@ -40,12 +83,29 @@ const typeDefs = gql`
     ): String
 
     updateTodoStatus(id: String!): String
+
+    registerstudent(
+      id: String!
+      name: String!
+      contact: String!
+      qualification: String!
+      books:[BookInput!]!
+    ): Student!
+
+    addData(
+      stringData: String!, 
+      intData: Int!, 
+      objectData: InputObject!, 
+      arrayData: [InputObject!]!
+    ): Data!
   }
 `;
 
 const resolvers = {
   Query: {
     todos: () => todosData,
+    studentQuery: () => studentData,
+    storedData: () => data_arr,
   },
   Mutation: {
     createTodo: (parent, args, context, info) => {
@@ -92,6 +152,34 @@ const resolvers = {
       }
       return args.id;
     },
+
+    registerstudent: (parent, args, context, info) => {
+      console.log("register student", args)
+      studentData.push({
+        id: "STUD_" + Date.now().toString(),
+        name: args?.name,
+        contact: args?.contact,
+        qualification: args?.qualification,
+        books: args?.books
+      })
+      console.log("studentData", studentData)
+      return;
+    },
+
+    addData: (parent, args, context, info) => {
+      console.log("args", args)
+      const newData = {
+        id: uuidv4(),
+        stringField: args?.stringData,
+        intField: args?.intData,
+        objectField: args?.objectData,
+        arrayField: args?.arrayData,
+      };
+      data_arr.push(newData);
+      console.log("data_arr", data_arr)
+      return newData;
+    },
+
   },
 };
 

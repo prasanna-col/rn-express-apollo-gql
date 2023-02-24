@@ -20,14 +20,20 @@ import TaskListScreen from './pages/todo'
 import EditTaskScreen from './pages/todo/editTask'
 import AddTaskScreen from './pages/todo/addTask'
 
+
+// Student stack
+import StudentListScreen from "./pages/todo/book/list"
+import AddStudentScreen from "./pages/todo/book/addStudent"
+
 import { AppContextProvider } from "./context";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
+import { BASE_URL } from './app.config';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const client = new ApolloClient({
-  uri: "http://192.168.7.35:4000/graphql",
+  uri: BASE_URL,
   cache: new InMemoryCache(),
 });
 
@@ -59,7 +65,7 @@ const NavigationDrawerStructure = (props) => {
   );
 }
 
-function firstScreenStack({ navigation }) {
+function FirstScreenStack({ navigation }) {
   return (
     <Stack.Navigator initialRouteName="FirstPage"
 
@@ -89,7 +95,7 @@ function firstScreenStack({ navigation }) {
   );
 }
 
-function secondScreenStack({ navigation }) {
+function SecondScreenStack({ navigation }) {
   return (
     <Stack.Navigator
       initialRouteName="SecondPage"
@@ -128,7 +134,7 @@ function secondScreenStack({ navigation }) {
   );
 }
 
-function todoScreenStack({ navigation }) {
+function TodoScreenStack({ navigation }) {
   return (
     <Stack.Navigator
       initialRouteName="taskList"
@@ -169,6 +175,22 @@ function todoScreenStack({ navigation }) {
         options={{
           headerShown: false
         }} />
+      <Stack.Screen
+        name="StudentListScreen"
+        component={StudentListScreen}
+        options={{
+          headerShown: false
+        }} />
+
+      <Stack.Screen
+        name="Register student"
+        component={AddStudentScreen}
+        options={{
+          headerShown: false
+        }} />
+
+
+
     </Stack.Navigator>
   );
 }
@@ -179,7 +201,7 @@ function App() {
       <AppContextProvider value={contextValue}>
         <NavigationContainer>
           <Drawer.Navigator
-            drawerContentOptions={{
+            screenOptions={{
               activeTintColor: '#e91e63',
               itemStyle: { marginVertical: 5 },
             }}
@@ -188,7 +210,7 @@ function App() {
             <Drawer.Screen
               name="TodoPage"
               options={{ drawerLabel: 'Tasks page Option', headerShown: false }}
-              component={todoScreenStack} />
+              component={TodoScreenStack} />
 
             <Drawer.Screen
               name="FirstPage"
@@ -196,12 +218,12 @@ function App() {
                 drawerLabel: 'FirstPage',
                 headerShown: false // Hide the drawer header
               }}
-              component={firstScreenStack} />
+              component={FirstScreenStack} />
 
             <Drawer.Screen
               name="SecondPage"
               options={{ drawerLabel: 'Second page Option', headerShown: false }}
-              component={secondScreenStack} />
+              component={SecondScreenStack} />
 
           </Drawer.Navigator>
         </NavigationContainer>

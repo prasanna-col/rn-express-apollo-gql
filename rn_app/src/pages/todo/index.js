@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, StyleSheet, FlatList } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import DrawerHeader from "../../components/AppHeader/drawerHeader";
 import AppStatusBar from "../../components/AppStatusBar";
 import AppButton from "../../components/AppButton";
 import AppContainer from "../../components/AppContainer";
 import { useQuery, useMutation } from "@apollo/client";
 import AppText from "../../components/AppText";
-import { READ_TODOS, REMOVE_TODO, UPDATE_TODOSTATUS } from "./queries";
+import { READ_TODOS, READ_STUDENT, REMOVE_TODO, UPDATE_TODOSTATUS } from "./queries";
 import { Colors } from "../../assets/styles";
 
 import { App_borderRadius } from "../../components/AppConstants";
@@ -19,6 +19,7 @@ const TaskListScreen = ({ route, navigation }) => {
   const Tdate = DateFormet(new Date());
 
   const { data, loading, error } = useQuery(READ_TODOS);
+
   const [deleteTodo] = useMutation(REMOVE_TODO, {
     refetchQueries: [{ query: READ_TODOS }],
   }); // deleteTodo is user defined, not to be same as in REMOVE_TODO.
@@ -93,7 +94,7 @@ const TaskListScreen = ({ route, navigation }) => {
             backgroundColor: !item.completed
               ? Colors.card_bg
               : Colors.completed2,
-            borderWidth: item.priority ? 2 : 0,
+            borderWidth: item.priority ? 0.5 : 0,
             borderColor: item.priority ? Colors.AppColor : null,
           },
         ]}
@@ -102,11 +103,11 @@ const TaskListScreen = ({ route, navigation }) => {
           <View style={styles.assignNameView}>
             {!item.completed ? ( // not completed
               <AppText h2m semibold>
-                Assigned to: {item?.name}
+                👉 {item?.name}
               </AppText>
             ) : (
               <AppText h2m semibold strike gray italic>
-                Assigned to: {item?.name}
+                👉 {item?.name}
               </AppText>
             )}
           </View>
@@ -155,7 +156,7 @@ const TaskListScreen = ({ route, navigation }) => {
               onPress={() => {
                 comp_notComp(item.id);
               }}
-              title={"Done"}
+              title={"Done 🤙"}
             />
             <View style={{ marginLeft: "auto" }}>
               <AppText h3 mt2 italic gray>
@@ -182,6 +183,15 @@ const TaskListScreen = ({ route, navigation }) => {
             <AppText h2m AppBlack bold>
               Tasks Status
             </AppText>
+            <View style={{ alignItems: "flex-end", justifyContent: "center" }}>
+              <TouchableOpacity onPress={() => {
+                navigation.navigate("StudentListScreen")
+              }}>
+                <Text style={{ color: "blue", textDecorationLine: "underline" }}>Students info</Text>
+              </TouchableOpacity>
+
+            </View>
+
 
             <FlatList
               style={{ marginBottom: 160 }}

@@ -14,6 +14,42 @@ export const READ_TODOS = gql`
   }
 `;
 
+export const READ_STUDENT = gql`
+  query studentData {
+    studentQuery {
+      id
+      name
+      contact
+      qualification
+      books {
+        id
+        text
+        author
+      }
+    }
+  }
+`;
+
+
+export const READ_DATA = gql`
+query data_arr {
+  storedData {
+    id
+    stringField
+    intField
+    objectField {
+      field1
+      field2
+    }
+    arrayField {
+      field1
+      field2
+    }
+  }
+}
+`;
+
+
 export const CREATE_TODO = gql`
   mutation CreateTodo(
     $text: String!
@@ -30,6 +66,61 @@ export const CREATE_TODO = gql`
       priority: $priority
     )
   }
+`;
+
+export const CREATE_STUDENT = gql`
+
+  mutation CreateStudent(
+      $name: String!
+      $contact: String!
+      $qualification: String!
+      $books: [BookInput!]!
+  ) {
+    registerstudent(
+      name: $name
+      contact: $contact
+      qualification: $qualification
+      books: $books
+    ){
+      id
+      name
+      contact
+      qualification
+      books {
+        id
+        text
+        author
+      }
+    }
+  }
+`;
+
+export const ADD_DATA_MUTATION = gql`
+mutation AddData(
+  $stringData: String!, 
+  $intData: Int!, 
+  $objectData: InputObject!, 
+  $arrayData: [InputObject!]!
+  ) {
+  addData(
+    stringData: $stringData, 
+    intData: $intData, 
+    objectData: $objectData, 
+    arrayData: $arrayData
+    ) {
+    id
+    stringField
+    intField
+    objectField {
+      field1
+      field2
+    }
+    arrayField {
+      field1
+      field2
+    }
+  }
+}
 `;
 
 export const REMOVE_TODO = gql`

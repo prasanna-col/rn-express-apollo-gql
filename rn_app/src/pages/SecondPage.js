@@ -2,7 +2,7 @@
 // https://aboutreact.com/react-native-navigation-drawer/
 import * as React from 'react';
 import { Button, View, Text, SafeAreaView } from 'react-native';
-
+import { READ_DATA } from "../pages/todo/queries"
 const SecondPage = ({ navigation }) => {
 
     return (
