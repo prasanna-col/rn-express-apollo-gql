@@ -24,7 +24,7 @@ import AddTaskScreen from './pages/todo/addTask'
 // Student stack
 import StudentListScreen from "./pages/todo/book/list"
 import AddStudentScreen from "./pages/todo/book/addStudent"
-
+import EditStudentScreen from "./pages/todo/book/editStudent"
 import { AppContextProvider } from "./context";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 import { BASE_URL } from './app.config';
@@ -185,6 +185,13 @@ function TodoScreenStack({ navigation }) {
       <Stack.Screen
         name="Register student"
         component={AddStudentScreen}
+        options={{
+          headerShown: false
+        }} />
+
+      <Stack.Screen
+        name="edit student"
+        component={EditStudentScreen}
         options={{
           headerShown: false
         }} />

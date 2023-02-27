@@ -18,6 +18,8 @@ const typeDefs = gql`
     completed: Boolean
   }
 
+  
+
   type Student {
     id: String!
     name: String!
@@ -25,17 +27,21 @@ const typeDefs = gql`
     qualification: String!
     books:[BookTypeDef!]!
   }
-
   type BookTypeDef {
     id: String!
     text: String!
     author: String!
   }
-
   input BookInput {
     id: String!
     text: String!
     author: String!
+  }
+
+  type StudentUpdate {
+    stud_id: String
+    qualification: String
+    books: [BookTypeDef]
   }
 
   type Data {
@@ -45,12 +51,10 @@ const typeDefs = gql`
     objectField: ObjectData!
     arrayField: [ObjectData!]!
   }
-
   type ObjectData {
     field1: String!
     field2: String!
   }
-
   input InputObject {
     field1: String!
     field2: String!
@@ -63,6 +67,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+
     createTodo(
       text: String!
       name: String!
@@ -85,12 +90,21 @@ const typeDefs = gql`
     updateTodoStatus(id: String!): String
 
     registerstudent(
-      id: String!
       name: String!
       contact: String!
       qualification: String!
       books:[BookInput!]!
     ): Student!
+
+    updatestud(
+      stud_id: String
+      qualification: String
+      books:[BookInput]
+    ): StudentUpdate
+
+    deleteStud(
+      id:String!
+    ):String
 
     addData(
       stringData: String!, 
@@ -102,11 +116,13 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
+
   Query: {
     todos: () => todosData,
     studentQuery: () => studentData,
     storedData: () => data_arr,
   },
+
   Mutation: {
     createTodo: (parent, args, context, info) => {
       console.log("createTodo args", args);
@@ -155,15 +171,42 @@ const resolvers = {
 
     registerstudent: (parent, args, context, info) => {
       console.log("register student", args)
-      studentData.push({
+      const newStudent = {
         id: "STUD_" + Date.now().toString(),
         name: args?.name,
         contact: args?.contact,
         qualification: args?.qualification,
         books: args?.books
-      })
+      }
+      studentData.push(newStudent)
       console.log("studentData", studentData)
-      return;
+      return newStudent;
+    },
+
+    updatestud: (parent, args, context, info) => {
+      console.log("updatestud args", args)
+      studentData.some((obj, i) => {
+        if (obj.id == args?.stud_id) {
+          // once the ID is match,
+          studentData[i].qualification = args?.qualification;
+          studentData[i].books = args?.books;
+          console.log("updtaed", studentData[i])
+          return studentData[i] + "";
+        }
+      });
+      return studentData
+    },
+
+    deleteStud: (parent, args, context, info) => {
+      console.log("deleteStud args", args)
+      studentData.some((obj, i) => {
+        if (obj.id == args?.id) {
+          // once the ID is match,
+          console.log("deleted", studentData[i])
+          studentData.splice(i, 1);
+          return studentData;
+        }
+      });
     },
 
     addData: (parent, args, context, info) => {

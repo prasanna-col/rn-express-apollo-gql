@@ -1,55 +1,19 @@
 import React, { useState } from "react";
-import {
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, } from "react-native";
 import AppHeader from "../../../components/AppHeader";
 import AppStatusBar from "../../../components/AppStatusBar";
 import AppButton from "../../../components/AppButton";
 import AppTextInput from "../../../components/AppTextInput";
 import AppContainer from "../../../components/AppContainer";
 import AppText from "../../../components/AppText";
-import { CREATE_STUDENT, READ_STUDENT, READ_TODOS } from "../queries";
+import { CREATE_STUDENT, READ_STUDENT } from "../queries";
 import { Colors } from "../../../assets/styles";
 import { App_borderRadius } from "../../../components/AppConstants";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { DateFormet } from "../../../utils/DateFormet";
 import { useQuery, useMutation } from "@apollo/client";
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
-import { BASE_URL } from "../../../app.config";
 
-const client = new ApolloClient({
-  uri: BASE_URL,
-  cache: new InMemoryCache(),
-});
 
 const AddStudentScreen = ({ route, navigation }) => {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [date, setDate] = useState("");
-  const [ispriority, setIspriority] = useState(false);
 
-  const toggleSwitch = () => {
-    setIspriority((previousState) => !previousState);
-  };
-
-
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    console.log("A date has been picked: ", date);
-    setDate(date);
-    hideDatePicker();
-  };
   //  Here createStudent is user defined
   const [addStud] = useMutation(CREATE_STUDENT, {
     refetchQueries: [{ query: READ_STUDENT }],
@@ -60,24 +24,21 @@ const AddStudentScreen = ({ route, navigation }) => {
   const [qualification, setQualification] = useState("");
 
   const on_save = async () => {
+
     var createdata = {
-      qualification: qualification,
       name: name,
       contact: contact,
-      books: [
-        {
-          "id": "BOOK_1",
-          "text": "Thirukural",
-          "author": "Thiruvalluvar"
-        }
-      ]
+      qualification: qualification,
+      books: []
     };
+
     await addStud({ variables: createdata }).then((res) => {
       console.log("res", res)
       navigation.navigate("StudentListScreen");
     }).catch((err) => {
       console.log("err", err)
     });
+
   };
 
   return (
@@ -118,7 +79,6 @@ const AddStudentScreen = ({ route, navigation }) => {
               placeholder={"Eg: B.E/ B.Tech/ HSC/ SSLC"}
               defaultValue={qualification}
             />
-
 
           </View>
           <AppButton

@@ -7,7 +7,7 @@ import AppButton from "../../../components/AppButton";
 import AppContainer from "../../../components/AppContainer";
 import { useQuery, useMutation } from "@apollo/client";
 import AppText from "../../../components/AppText";
-import { READ_TODOS, READ_STUDENT, REMOVE_TODO, UPDATE_TODOSTATUS } from "../queries";
+import { READ_STUDENT, REMOVE_STUD } from "../queries";
 import { Colors } from "../../../assets/styles";
 
 import { App_borderRadius } from "../../../components/AppConstants";
@@ -21,16 +21,6 @@ const StudentListScreen = ({ route, navigation }) => {
 
     const { loading, error, data } = useQuery(READ_STUDENT);
     console.log("READ_STUDENT data-->", data);
-
-
-
-    const [deleteTodo] = useMutation(REMOVE_TODO, {
-        refetchQueries: [{ query: READ_TODOS }],
-    }); // deleteTodo is user defined, not to be same as in REMOVE_TODO.
-
-    const [updateTodoStaus] = useMutation(UPDATE_TODOSTATUS, {
-        refetchQueries: [{ query: READ_TODOS }],
-    });
 
     const [studentData, setStudentData] = useState([]);
     const [Loader, setLoader] = useState(true);
@@ -58,6 +48,7 @@ const StudentListScreen = ({ route, navigation }) => {
         const unsubscribe = navigation.addListener("focus", async () => {
             console.log("list refresh");
             if (error) {
+                console.log("error", error)
                 setLoader(false)
             }
             // useQuery(READ_STUDENT)
@@ -78,8 +69,13 @@ const StudentListScreen = ({ route, navigation }) => {
         return unsubscribe;
     }, [navigation]);
 
-    const onDeleteTask = (taskid) => {
-        deleteTodo({ variables: { id: taskid } });
+    const [delete_stud] = useMutation(REMOVE_STUD, {
+        refetchQueries: [{ query: READ_STUDENT }],
+    });
+
+    const onDeleteTask = (taskid, index) => {
+        console.log("taskid", taskid)
+        delete_stud({ variables: { id: taskid } });
     };
 
     const comp_notComp = (taskid) => {
@@ -111,64 +107,50 @@ const StudentListScreen = ({ route, navigation }) => {
                 <View style={styles.cardview1}>
                     <View style={styles.assignNameView}>
                         <AppText h2m semibold>
-                            👉 {item?.name}
+                            ❝{item?.name}❞
                         </AppText>
 
                     </View>
 
-                    {/* <View style={styles.iconView}>
-                        {!item.completed ? (
-                            <AppCardIcons
-                                edittask2_icon
-                                onPress={() => {
-                                    navigation.navigate("editTask", item);
-                                }}
-                            />
-                        ) : (
-                            <AppCardIcons
-                                retry_icon
-                                onPress={() => {
-                                    comp_notComp(item.id);
-                                }}
-                            />
-                        )}
-                    </View> */}
+                    <View style={styles.iconView}>
+                        <AppCardIcons
+                            edittask2_icon
+                            onPress={() => {
+                                navigation.navigate("edit student", item);
+                            }}
+                        />
+                    </View>
 
-                    {/* <View style={styles.iconView}>
+                    <View style={styles.iconView}>
                         <AppCardIcons
                             deleteTask_icon
                             onPress={() => {
-                                onDeleteTask(item.id);
+                                onDeleteTask(item.id, key);
                             }}
                         />
-                    </View> */}
-                </View>
-                {/* {!item.completed ? (
-                    <AppText h3 mt2 italic underline>
-                        Task: {item?.text}
-                    </AppText>
-                ) : (
-                    <AppText h3 mt2 italic strike gray>
-                        Task: {item?.text}
-                    </AppText>
-                )}
-
-                {!item.completed && (
-                    <View style={{ flexDirection: "row" }}>
-                        <AppButton
-                            done
-                            onPress={() => {
-                                comp_notComp(item.id);
-                            }}
-                            title={"Done 🤙"}
-                        />
-                        <View style={{ marginLeft: "auto" }}>
-                            <AppText h3 mt2 italic gray>
-                                {DateFormet(item.date)}
-                            </AppText>
-                        </View>
                     </View>
-                )} */}
+                </View>
+
+                <AppText h3 mt2 italic >
+                    🎓: {item?.qualification}
+                </AppText>
+                <AppText h3 mt2 italic underline>
+                    Books
+                </AppText>
+                {(item?.books).length ?
+                    (item?.books).map((val, key) => {
+                        return (
+                            <AppText h3m mt2 ml2 grey italic>
+                                {key + 1}. {val?.text}
+                            </AppText>
+                        )
+                    })
+                    :
+                    <AppText h3m mt2 ml2 gray >
+                        no book
+                    </AppText>
+                }
+
             </View>
         );
     };

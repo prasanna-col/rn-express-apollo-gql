@@ -154,3 +154,37 @@ export const UPDATE_TODOSTATUS = gql`
     updateTodoStatus(id: $id)
   }
 `;
+
+
+export const UPDATE_STUD = gql`
+  mutation UpdateStud(
+    $stud_id: String
+    $qualification: String
+    $books: [BookInput]
+  )
+  {
+    updatestud(
+      stud_id: $stud_id
+      qualification: $qualification
+      books: $books
+    ){
+      stud_id
+      qualification
+      books {
+        id
+        text
+        author
+      }
+    }
+  }
+`;
+
+export const REMOVE_STUD = gql`
+  mutation RemoveStud(
+    $id: String!
+  ){
+    deleteStud(
+      id:$id
+    )
+  }
+  `;
