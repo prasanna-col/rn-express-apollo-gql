@@ -155,7 +155,6 @@ export const UPDATE_TODOSTATUS = gql`
   }
 `;
 
-
 export const UPDATE_STUD = gql`
   mutation UpdateStud(
     $stud_id: String

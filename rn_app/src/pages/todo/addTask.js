@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Button,
   SafeAreaView,
   StyleSheet,
   Switch,
@@ -44,7 +43,7 @@ const AddTaskScreen = ({ route, navigation }) => {
     setDate(date);
     hideDatePicker();
   };
-  //  Here createTodo is user defined
+
   const [addTodo] = useMutation(CREATE_TODO, {
     refetchQueries: [{ query: READ_TODOS }],
   });
@@ -58,7 +57,7 @@ const AddTaskScreen = ({ route, navigation }) => {
       text: task,
       name: name,
       phone: phone,
-      date: date ==="" ? new Date() : date,
+      date: date === "" ? new Date() : date,
       priority: ispriority
     };
     await addTodo({ variables: createdata });
@@ -126,27 +125,27 @@ const AddTaskScreen = ({ route, navigation }) => {
               </View>
 
               <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginLeft: "auto"
-              }}
-            >
-              <AppText h3 AppBlack bold>
-                Priority
-              </AppText>
-              <Switch
                 style={{
-                  marginLeft: 10,
-                  transform: [{ scaleX: 0.9 }, { scaleY: 0.6 }],
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: "auto"
                 }}
-                trackColor={{ false: "#767577", true: Colors.AppColorLight }}
-                thumbColor={ispriority ? Colors.AppColor : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={ispriority}
-              />
-            </View>
+              >
+                <AppText h3 AppBlack bold>
+                  Priority
+                </AppText>
+                <Switch
+                  style={{
+                    marginLeft: 10,
+                    transform: [{ scaleX: 0.9 }, { scaleY: 0.6 }],
+                  }}
+                  trackColor={{ false: "#767577", true: Colors.AppColorLight }}
+                  thumbColor={ispriority ? Colors.AppColor : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={ispriority}
+                />
+              </View>
             </View>
           </View>
           <AppButton

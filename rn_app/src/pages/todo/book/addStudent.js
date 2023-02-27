@@ -9,12 +9,11 @@ import AppText from "../../../components/AppText";
 import { CREATE_STUDENT, READ_STUDENT } from "../queries";
 import { Colors } from "../../../assets/styles";
 import { App_borderRadius } from "../../../components/AppConstants";
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 
 
 const AddStudentScreen = ({ route, navigation }) => {
 
-  //  Here createStudent is user defined
   const [addStud] = useMutation(CREATE_STUDENT, {
     refetchQueries: [{ query: READ_STUDENT }],
   });

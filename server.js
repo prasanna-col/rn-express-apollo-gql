@@ -44,6 +44,8 @@ const typeDefs = gql`
     books: [BookTypeDef]
   }
 
+
+
   type Data {
     id: ID!
     stringField: String!
@@ -124,6 +126,7 @@ const resolvers = {
   },
 
   Mutation: {
+
     createTodo: (parent, args, context, info) => {
       console.log("createTodo args", args);
       return todosData.push({
@@ -136,6 +139,7 @@ const resolvers = {
         completed: false,
       });
     },
+
     removeTodo: (parent, args, context, info) => {
       console.log("removeTodo args", args);
       for (let i in todosData) {
@@ -145,6 +149,7 @@ const resolvers = {
       }
       return args.id;
     },
+
     updateTodo: (parent, args, context, info) => {
       console.log("updateTodo args", args);
       for (let i in todosData) {
@@ -159,6 +164,7 @@ const resolvers = {
       }
       return args.id;
     },
+
     updateTodoStatus: (parent, args, context, info) => {
       console.log("updateTodoStatus args", args);
       for (let i in todosData) {

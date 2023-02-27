@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import DrawerHeader from "../../../components/AppHeader/drawerHeader";
 import AppHeader from "../../../components/AppHeader"
 import AppStatusBar from "../../../components/AppStatusBar";
-import AppButton from "../../../components/AppButton";
 import AppContainer from "../../../components/AppContainer";
 import { useQuery, useMutation } from "@apollo/client";
 import AppText from "../../../components/AppText";
 import { READ_STUDENT, REMOVE_STUD } from "../queries";
 import { Colors } from "../../../assets/styles";
-
 import { App_borderRadius } from "../../../components/AppConstants";
 import AppCardIcons from "../../../components/AppCardIcons";
-import { Time, DateFormet } from "../../../utils/DateFormet";
 
 const StudentListScreen = ({ route, navigation }) => {
     // useQuery -- to get the data from server
     // useMutation -- to push data or update on server.
-    const Tdate = DateFormet(new Date());
 
     const { loading, error, data } = useQuery(READ_STUDENT);
     console.log("READ_STUDENT data-->", data);
@@ -32,13 +27,6 @@ const StudentListScreen = ({ route, navigation }) => {
     };
 
     console.log("student data-->", data);
-
-    const status_view = () => {
-        if (loading) return <Text>loading...</Text>;
-        if (error) return <Text>ERROR</Text>;
-        if (!data) return <Text>Not found</Text>;
-        // if (data) return <Text>Connected</Text>;
-    };
 
     useEffect(() => {
         getTask();
@@ -63,7 +51,6 @@ const StudentListScreen = ({ route, navigation }) => {
 
             setStudentData([...[], ...data?.studentQuery]);
             setLoader(false);
-
         });
 
         return unsubscribe;
@@ -76,10 +63,6 @@ const StudentListScreen = ({ route, navigation }) => {
     const onDeleteTask = (taskid, index) => {
         console.log("taskid", taskid)
         delete_stud({ variables: { id: taskid } });
-    };
-
-    const comp_notComp = (taskid) => {
-        updateTodoStaus({ variables: { id: taskid } });
     };
 
     const SortbyOldestFirst = (array) => {
@@ -159,7 +142,6 @@ const StudentListScreen = ({ route, navigation }) => {
         <>
             <AppStatusBar />
             <SafeAreaView style={{ flex: 1 }}>
-                {/* <DrawerHeader headerTitle={"Student Details"} rytIcon createTask /> */}
                 <AppHeader
                     headerTitle="Student Details"
                     onBackPress={() => {

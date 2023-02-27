@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, View, Text, Button, Switch, TouchableOpacity } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useMutation } from "@apollo/client";
 import AppHeader from "../../../components/AppHeader";
 import AppStatusBar from "../../../components/AppStatusBar";
