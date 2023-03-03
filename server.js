@@ -1,7 +1,21 @@
 const express = require("express");
-const { ApolloServer, gql } = require("apollo-server-express");
+// const { ApolloServer } = require("@apollo/server");
+// const { gql } = require("graphql-tag");
+const { ApolloServer, gql } = require('apollo-server-express');
+
 const cors = require("cors");
 const { v4: uuidv4 } = require('uuid');
+const { createWriteStream } = require('fs');
+const { GraphQLUpload } = require('graphql-upload');
+
+const app = express();
+app.use(cors());
+
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ limit: '25mb', extended: true }));
+
+const path = require("path")
+const fs = require('fs');
 
 let todosData = [];
 let studentData = [];
@@ -62,6 +76,20 @@ const typeDefs = gql`
     field2: String!
   }
 
+  type FileBase {
+    id: ID!
+    filename: String!
+    mimetype: String!
+    encoding: String!
+    url: String!
+  }
+
+  scalar Upload
+
+  type File{
+    url: String!
+  }
+
   type Query {
     studentQuery: [Student]!
     todos: [Todoo]!
@@ -108,6 +136,12 @@ const typeDefs = gql`
       id:String!
     ):String
 
+    uploadImage(
+      file: Upload!
+    ): File!
+    
+    uploadFile(file: String!): FileBase!
+
     addData(
       stringData: String!, 
       intData: Int!, 
@@ -124,7 +158,6 @@ const resolvers = {
     studentQuery: () => studentData,
     storedData: () => data_arr,
   },
-
   Mutation: {
 
     createTodo: (parent, args, context, info) => {
@@ -229,16 +262,75 @@ const resolvers = {
       return newData;
     },
 
+    uploadImage: async (_, { file }) => {
+      // Extract the image data from the Upload scalar
+      console.log("file", file)
+      const { createReadStream, filename } = await file;
+
+      console.log("createReadStream", createReadStream)
+      console.log("filename", filename)
+
+      // Generate a unique filename for the uploaded image
+      const timestamp = Date.now().toString();
+      const extension = filename.split('.').pop();
+      const uniqueFilename = `${timestamp}.${extension}`;
+
+      // Write the image data to disk
+      const stream = createReadStream();
+      const path = `./images/${uniqueFilename}`;
+      await new Promise((resolve, reject) => {
+        stream
+          .pipe(createWriteStream(path))
+          .on('finish', () => resolve())
+          .on('error', (error) => reject(error));
+      });
+
+      // Return the URL of the uploaded image
+      const url = `http://localhost:4000/images/${uniqueFilename}`;
+      return { url };
+    },
+
+    uploadFile: async (_, { file }) => {
+
+      // console.log("file", file)
+      const base64Data = file.replace(/^data:image\/\w+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+      const filename = `file-${Date.now()}.jpg`;
+      const filePath = path.join(__dirname, `uploads/${filename}`);
+      console.log("filePath", filePath)
+      await new Promise((resolve, reject) => {
+        fs.writeFile(filePath, buffer, (err) => {
+          if (err) {
+            console.log("reject err", err)
+            reject(err);
+          }
+          resolve();
+        });
+      });
+
+      const url = `http://localhost:4000/uploads/${filename}`;
+      return { id: '123', filename, mimetype: 'image/jpeg', encoding: 'base64', url };
+    },
   },
 };
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-const app = express();
-server.applyMiddleware({ app });
 
-app.use(cors());
+// server.applyMiddleware({ app });
+// app.listen({ port: 4000 }, () =>
+//   console.log("Now browse to http://localhost:4000" + server.graphqlPath)
+// );
 
-app.listen({ port: 4000 }, () =>
-  console.log("Now browse to http://localhost:4000" + server.graphqlPath)
-);
+server.start().then(async () => {
+  await server.applyMiddleware({ app });
+  app.listen({ port: 4000 }, () =>
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+  );
+});
+
+
+
+
+
+

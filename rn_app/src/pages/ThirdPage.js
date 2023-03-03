@@ -15,7 +15,6 @@ const ThirdPage = ({ route, navigation }) => {
                     <Button onPress={() => navigation.navigate('SecondPage')} title="Go to Second Page" />
                 </View>
                 <Text style={{ fontSize: 18, textAlign: 'center', color: 'grey' }}> React Navigate Drawer</Text>
-                <Text style={{ fontSize: 16, textAlign: 'center', color: 'grey' }}> www.aboutreact.com</Text>
             </View>
         </SafeAreaView>
     );

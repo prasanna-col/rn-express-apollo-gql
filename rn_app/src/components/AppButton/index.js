@@ -5,12 +5,13 @@ import { Active_Opacity, App_borderRadius } from '../AppConstants';
 const AppButton = ({
     title,
     onPress,
-    done
+    done,
+    style
 }) => (
     <TouchableOpacity
         activeOpacity={Active_Opacity}
         onPress={onPress}
-        style={[styles.Btn, styles.boxShadow, { width: done ? 70 : "100%" }]}
+        style={[styles.Btn, styles.boxShadow, { width: done ? 70 : "100%" }, style]}
     >
         <Text style={styles.titleStyle}>{title}</Text>
     </TouchableOpacity>

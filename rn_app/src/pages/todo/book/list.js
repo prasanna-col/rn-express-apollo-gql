@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
 import AppHeader from "../../../components/AppHeader"
 import AppStatusBar from "../../../components/AppStatusBar";
 import AppContainer from "../../../components/AppContainer";
@@ -9,6 +9,7 @@ import { READ_STUDENT, REMOVE_STUD } from "../queries";
 import { Colors } from "../../../assets/styles";
 import { App_borderRadius } from "../../../components/AppConstants";
 import AppCardIcons from "../../../components/AppCardIcons";
+import AppButton from "../../../components/AppButton";
 
 const StudentListScreen = ({ route, navigation }) => {
     // useQuery -- to get the data from server
@@ -19,7 +20,6 @@ const StudentListScreen = ({ route, navigation }) => {
 
     const [studentData, setStudentData] = useState([]);
     const [Loader, setLoader] = useState(true);
-
 
     const getTask = async () => {
         setStudentData([...[], ...data?.studentQuery]);
@@ -148,6 +148,7 @@ const StudentListScreen = ({ route, navigation }) => {
                         navigation.goBack();
                     }}
                 />
+
                 {Loader ? (
                     <AppContainer>
                         <AppText h3 AppBlack>
@@ -165,10 +166,7 @@ const StudentListScreen = ({ route, navigation }) => {
                             }}>
                                 <Text style={{ color: "blue", textDecorationLine: "underline" }}>Add student</Text>
                             </TouchableOpacity>
-
                         </View>
-
-
                         <FlatList
                             style={{ marginBottom: 160 }}
                             data={SortbyOldestFirst(studentData)}

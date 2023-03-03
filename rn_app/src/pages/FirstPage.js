@@ -1,11 +1,14 @@
 // React Native Navigation Drawer
 // https://aboutreact.com/react-native-navigation-drawer/
-import React, { useEffect, useCallback } from 'react';
-import { Button, View, Text, SafeAreaView } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Button, View, Text, SafeAreaView, Image } from 'react-native';
 import { BASE_URL } from '../app.config';
 import { ApolloClient, InMemoryCache, gql, useQuery, useMutation } from '@apollo/client';
 import AppButton from '../components/AppButton';
-import { READ_DATA, ADD_DATA_MUTATION } from "../pages/todo/queries"
+import AppText from '../components/AppText';
+import { READ_DATA, ADD_DATA_MUTATION, UPLOAD_IMAGE, UploadFileMutation } from "../pages/todo/queries"
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 
 const FirstPage = ({ navigation }) => {
   const { loading, error, data } = useQuery(READ_DATA);
@@ -56,15 +59,92 @@ const FirstPage = ({ navigation }) => {
       });
   };
 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [base64Img, setBase64Img] = useState(null);
+  const [ImageStoredData, setImageStoredData] = useState({});
+  const [uploadImage] = useMutation(UPLOAD_IMAGE);
+  const [uploadImagebase64] = useMutation(UploadFileMutation);
+
+  // Create a FormData instance to hold the selected image data
+  const formData = new FormData();
+  formData.append('file', {
+    uri: selectedImage,
+    type: 'image/jpeg',
+    name: 'image.jpg',
+  });
+
+  const uploadFile = async () => {
+    // Method: 1
+    // console.log("formData", formData)
+    // const response = await uploadImage({
+    //   variables: { file: formData },
+    // });
+    // console.log(response.data.uploadImage.url);
+
+    // Method: 2
+
+    const file = `data:image/jpeg;base64,${base64Img}`;
+    const response = await uploadImagebase64({
+      variables: { file }
+    })
+    // const response = await client.mutate({
+    //   mutation: uploadFileMutation,
+    //   variables: {
+    //     file,
+    //   },
+    // });
+    console.log("response", response)
+    setImageStoredData(response?.data?.uploadFile)
+  };
+
+  const pickFile = async () => {
+    try {
+      const result = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      });
+      setSelectedImage(result[0]?.uri)
+      RNFS.readFile(result[0]?.uri, 'base64')
+        .then(res => {
+          setBase64Img(res)
+          console.log("base64 data", res);
+          setImageStoredData({})
+        });
+      console.log("image data", result)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ alignItems: "center", marginTop: "10%" }}>
+        {
+          selectedImage ?
+            <Image
+              style={{ width: 66, height: 66 }}
+              source={{ uri: selectedImage }}
+            />
+            : null
+        }
+        <AppButton
+          style={{ width: "50%" }}
+          onPress={() => { (selectedImage && !ImageStoredData?.url) ? uploadFile() : pickFile() }}
+          title={(selectedImage && !ImageStoredData?.url) ? "Upload image" : "Select image"}
+        />
+        {
+          ImageStoredData?.url ?
+            <AppText>Dowload Link: {ImageStoredData?.url}</AppText>
+            : null
+        }
+        <AppButton
+          style={{ width: "50%" }}
+          onPress={() => {
+            on_save();
+          }}
+          title={"Add Obj & Arr data"}
+        />
+      </View>
 
-      <AppButton
-        onPress={() => {
-          on_save();
-        }}
-        title={"Save"}
-      />
       <View style={{ flex: 1, padding: 16 }}>
 
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -76,9 +156,7 @@ const FirstPage = ({ navigation }) => {
         <Text style={{ fontSize: 18, textAlign: 'center', color: 'grey' }}>
           React Navigate Drawer
         </Text>
-        <Text style={{ fontSize: 16, textAlign: 'center', color: 'grey' }}>
-          www.aboutreact.com
-        </Text>
+
       </View>
     </SafeAreaView>
   );

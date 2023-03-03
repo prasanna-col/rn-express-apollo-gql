@@ -187,3 +187,25 @@ export const REMOVE_STUD = gql`
     )
   }
   `;
+
+
+
+export const UploadFileMutation = gql`
+  mutation UploadFile($file: String!) {
+    uploadFile(file: $file) {
+      id
+      filename
+      mimetype
+      encoding
+      url
+    }
+  }
+`;
+
+export const UPLOAD_IMAGE = gql`
+mutation uploadImage($file: Upload!) {
+  uploadImage(file: $file) {
+    url
+  }
+}
+`;
